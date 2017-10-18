@@ -90,7 +90,7 @@ namespace SqlServerWeb.Controllers
         // GET: Parts/Delete/5
         public ActionResult Delete(string id)
         {
-            return View(connection.SoftBuild().From("part").Where("id", Guid.Parse(id)).FindOne<Part>());
+            return View(connection.SoftBuild().From("part").Where("id", Guid.Parse(id)).FindOne<Part>()); 
         }
 
         // POST: Parts/Delete/5
