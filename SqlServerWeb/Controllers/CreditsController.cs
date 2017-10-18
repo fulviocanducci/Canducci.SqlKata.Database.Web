@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using Canducci.SqlKata.Dapper.Postgres;
-using PostgresWeb.Models;
+using SqlServerWeb.Models;
+using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
+using Microsoft.AspNetCore.Http;
 
-namespace PostgresWeb.Controllers
+namespace SqlServerWeb.Controllers
 {
     public class CreditsController : Controller
     {
@@ -98,12 +98,12 @@ namespace PostgresWeb.Controllers
         public ActionResult Delete(int id, IFormCollection collection)
         {
             try
-            {                
+            {
                 connection.SoftBuild()
                     .From("credit")
                     .Where("id", id)
                     .Delete()
-                    .SaveUpdate();                
+                    .SaveUpdate();
 
                 return RedirectToAction(nameof(Index));
             }
