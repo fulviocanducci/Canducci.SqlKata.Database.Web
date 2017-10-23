@@ -8,6 +8,8 @@ using System.Data;
 using SqlServerWeb.Models;
 using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
+using SqlKata;
+using SqlKata.Compilers;
 
 namespace SqlServerWeb.Controllers
 {
@@ -43,21 +45,32 @@ namespace SqlServerWeb.Controllers
         {
             try
             {
+                //Query q = new Query("People")
+                //    .Insert(new Dictionary<string, object>
+                //    {
+                //        ["Name"] = people.Name,
+                //        ["Created"] = null,
+                //        ["Active"] = people.Active
+                //    });
+
+                //SqlServerCompiler s = new SqlServerCompiler();
+                //var res = s.Compile(q);
+
                 var id = connection.SoftBuild()
                     .From("People")
                     .Insert(new Dictionary<string, object>
                     {
                         ["Name"] = people.Name, 
-                        ["Created"] = people.Created,
+                        ["Created"] = people.Created ?? default(DateTime?),
                         ["Active"] = people.Active
                     })
                     .SaveInsertGetByIdInserted<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw ex;                
             }
         }
 
