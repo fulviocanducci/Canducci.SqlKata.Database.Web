@@ -19,7 +19,7 @@ namespace SqlServerWeb.Controllers
         // GET: Parts
         public ActionResult Index()
         {
-            return View(connection.SoftBuild().From("part").List<Part>());
+            return View(connection.SoftBuild().From("part").OrderBy("description").List<Part>());
         }
 
         // GET: Parts/Details/5

@@ -18,7 +18,7 @@ namespace PostgresWeb.Controllers
         // GET: Credits
         public ActionResult Index()
         {
-            return View(connection.SoftBuild().From("credit").List<Credit>());
+            return View(connection.SoftBuild().From("credit").OrderBy("description").List<Credit>());
         }
 
         // GET: Credits/Details/5

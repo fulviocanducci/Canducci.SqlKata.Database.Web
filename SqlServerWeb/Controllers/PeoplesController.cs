@@ -1,50 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using SqlServerWeb.Models;
 using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
-using Microsoft.AspNetCore.Http;
 
 namespace SqlServerWeb.Controllers
 {
-    public class CreditsController : Controller
+    public class PeoplesController : Controller
     {
         private IDbConnection connection;
-        public CreditsController(IDbConnection connection)
+        public PeoplesController(IDbConnection connection)
         {
             this.connection = connection;
         }
-        // GET: Credits
+        // GET: Peoples
         public ActionResult Index()
         {
-            return View(connection.SoftBuild().From("credit").OrderBy("id").List<Credit>());
+            return View(connection.SoftBuild().From("People").OrderBy("Name").List<People>());
         }
 
-        // GET: Credits/Details/5
+        // GET: Peoples/Details/5
         public ActionResult Details(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("People").Where("Id", id).FindOne<People>());
         }
 
-        // GET: Credits/Create
+        // GET: Peoples/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Credits/Create
+        // POST: Peoples/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Credit credit)
+        public ActionResult Create(People people)
         {
             try
             {
                 var id = connection.SoftBuild()
-                    .From("credit")
+                    .From("People")
                     .Insert(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["Name"] = people.Name, 
+                        ["Created"] = people.Created,
+                        ["Active"] = people.Active
                     })
                     .SaveInsertGetByIdInserted<int>();
 
@@ -56,29 +61,31 @@ namespace SqlServerWeb.Controllers
             }
         }
 
-        // GET: Credits/Edit/5
+        // GET: Peoples/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("People").Where("Id", id).FindOne<People>());
         }
 
-        // POST: Credits/Edit/5
+        // POST: Peoples/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Credit credit)
+        public ActionResult Edit(People people)
         {
             try
             {
                 connection.SoftBuild()
-                    .From("credit")
-                    .Where("id", credit.Id)
+                    .From("People")
+                    .Where("Id", people.Id)
                     .Update(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["Name"] = people.Name,
+                        ["Created"] = people.Created,
+                        ["Active"] = people.Active
                     })
                     .SaveUpdate();
 
-                return RedirectToAction(nameof(Edit), new { id = credit.Id });
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -86,13 +93,13 @@ namespace SqlServerWeb.Controllers
             }
         }
 
-        // GET: Credits/Delete/5
+        // GET: Peoples/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("People").Where("Id", id).FindOne<People>());
         }
 
-        // POST: Credits/Delete/5
+        // POST: Peoples/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
@@ -100,8 +107,8 @@ namespace SqlServerWeb.Controllers
             try
             {
                 connection.SoftBuild()
-                    .From("credit")
-                    .Where("id", id)
+                    .From("People")
+                    .Where("Id", id)
                     .Delete()
                     .SaveUpdate();
 
