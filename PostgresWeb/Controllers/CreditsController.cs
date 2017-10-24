@@ -5,6 +5,7 @@ using System.Data;
 using Canducci.SqlKata.Dapper.Postgres;
 using PostgresWeb.Models;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
+using X.PagedList;
 
 namespace PostgresWeb.Controllers
 {
@@ -16,9 +17,28 @@ namespace PostgresWeb.Controllers
             this.connection = connection;
         }
         // GET: Credits
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(connection.SoftBuild().From("credit").OrderBy("description").List<Credit>());
+            page = page ?? 1;
+
+            int items = 5;
+
+            int count = connection
+                .SoftBuild()
+                .From("credit")
+                .Count()
+                .FindOne<int>();
+
+            IEnumerable<Credit> model = connection
+                .SoftBuild()
+                .From("credit")
+                .OrderBy("description")
+                .ForPage(page.Value, items)
+                .List<Credit>();
+
+            StaticPagedList<Credit> result = new StaticPagedList<Credit>(model, page.Value, items, count);
+
+            return View(result);
         }
 
         // GET: Credits/Details/5

@@ -1,10 +1,11 @@
-﻿@model IEnumerable<MySqlWeb.Models.Credit>
+﻿@model X.PagedList.StaticPagedList<MySqlWeb.Models.Credit>
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h2>Credito - Lista</h2>
+<h2>Credito - Lista - MySQL</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,10 +14,10 @@
     <thead>
         <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.Id)
+                    Id
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Description)
+                    Descrição
                 </th>
             <th></th>
         </tr>
@@ -24,13 +25,13 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td style="width:15%">
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
-            <td>
+            <td style="width:70%">
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
-            <td>
+            <td style="width:15%">
                 @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
                 @Html.ActionLink("Details", "Details", new { id=item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id=item.Id })
@@ -38,4 +39,11 @@
         </tr>
 }
     </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" style="text-align:center" align="center">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+            </td>
+        </tr>
+    </tfoot>
 </table>

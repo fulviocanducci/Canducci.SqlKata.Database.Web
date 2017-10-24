@@ -6,6 +6,7 @@ using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using System;
 using System.Collections.Generic;
+using X.PagedList;
 
 namespace SqlServerWeb.Controllers
 {
@@ -16,10 +17,31 @@ namespace SqlServerWeb.Controllers
         {
             this.connection = connection;
         }
+
         // GET: Parts
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(connection.SoftBuild().From("part").OrderBy("description").List<Part>());
+            page = page ?? 1;
+
+            int total = 5;
+
+            int count = connection
+                .SoftBuild()
+                .From("Part")
+                .Count()
+                .FindOne<int>();
+
+            IEnumerable<Part> model = connection
+                .SoftBuild()
+                .From("Part")
+                .OrderBy("Description")
+                .ForPage(page.Value, total)
+                .List<Part>();
+
+            StaticPagedList<Part> result =
+                new StaticPagedList<Part>(model, page.Value, total, count);
+
+            return View(result);
         }
 
         // GET: Parts/Details/5

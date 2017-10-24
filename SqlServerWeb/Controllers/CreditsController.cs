@@ -5,7 +5,7 @@ using SqlServerWeb.Models;
 using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using Microsoft.AspNetCore.Http;
-
+using X.PagedList;
 namespace SqlServerWeb.Controllers
 {
     public class CreditsController : Controller
@@ -16,9 +16,29 @@ namespace SqlServerWeb.Controllers
             this.connection = connection;
         }
         // GET: Credits
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
-            return View(connection.SoftBuild().From("credit").OrderBy("id").List<Credit>());
+            page = page ?? 1;
+
+            int total = 5;
+
+            int count = connection
+                .SoftBuild()
+                .From("Credit")
+                .Count()
+                .FindOne<int>();
+
+            IEnumerable<Credit> model = connection
+                .SoftBuild()
+                .From("Credit")
+                .OrderBy("Description")
+                .ForPage(page.Value, total)
+                .List<Credit>();
+
+            StaticPagedList<Credit> result =
+                new StaticPagedList<Credit>(model, page.Value, total, count);
+
+            return View(result);
         }
 
         // GET: Credits/Details/5

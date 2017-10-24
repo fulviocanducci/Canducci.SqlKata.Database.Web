@@ -5,9 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Canducci.SqlKata.Dapper.SqlServer" Version="1.0.0-Beta-2.0.5" />
+    <PackageReference Include="Canducci.SqlKata.Dapper.SqlServer" Version="1.0.0-Beta-2.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="1.0.4-beta" />
   </ItemGroup>
 
   <ItemGroup>
