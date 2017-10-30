@@ -62,17 +62,6 @@ namespace SqlServerWeb.Controllers
         {
             try
             {
-                //Query q = new Query("People")
-                //    .Insert(new Dictionary<string, object>
-                //    {
-                //        ["Name"] = people.Name,
-                //        ["Created"] = null,
-                //        ["Active"] = people.Active
-                //    });
-
-                //SqlServerCompiler s = new SqlServerCompiler();
-                //var res = s.Compile(q);
-
                 var id = connection.SoftBuild()
                     .From("People")
                     .Insert(new Dictionary<string, object>
