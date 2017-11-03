@@ -6,6 +6,7 @@ using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
+using System;
 
 namespace SqlServerWeb.Controllers
 {
@@ -45,7 +46,7 @@ namespace SqlServerWeb.Controllers
         // GET: Credits/Details/5
         public ActionResult Details(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("Credit").Where("Id", id).FindOne<Credit>());
         }
 
         // GET: Credits/Create
@@ -62,25 +63,26 @@ namespace SqlServerWeb.Controllers
             try
             {
                 var id = connection.SoftBuild()
-                    .From("credit")
+                    .From("Credit")
                     .Insert(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["Description"] = credit.Description,
+                        ["Created"] = credit.Created
                     })
                     .SaveInsert<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw ex;
             }
         }
 
         // GET: Credits/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("Credit").Where("Id", id).FindOne<Credit>());
         }
 
         // POST: Credits/Edit/5
@@ -91,26 +93,27 @@ namespace SqlServerWeb.Controllers
             try
             {
                 connection.SoftBuild()
-                    .From("credit")
-                    .Where("id", credit.Id)
+                    .From("Credit")
+                    .Where("Id", credit.Id)
                     .Update(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["Description"] = credit.Description,
+                        ["Created"] = credit.Created
                     })
                     .SaveUpdate();
 
                 return RedirectToAction(nameof(Edit), new { id = credit.Id });
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                throw ex;
             }
         }
 
         // GET: Credits/Delete/5
         public ActionResult Delete(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            return View(connection.SoftBuild().From("Credit").Where("Id", id).FindOne<Credit>());
         }
 
         // POST: Credits/Delete/5
@@ -121,7 +124,7 @@ namespace SqlServerWeb.Controllers
             try
             {
                 connection.SoftBuild()
-                    .From("credit")
+                    .From("Credit")
                     .Where("id", id)
                     .Delete()
                     .SaveUpdate();

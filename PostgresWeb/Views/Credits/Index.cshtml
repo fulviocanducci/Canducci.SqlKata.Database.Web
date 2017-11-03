@@ -19,6 +19,9 @@
             <th>
                 Descrição
             </th>
+            <th>
+                Criado
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -29,8 +32,11 @@
                 <td style="width:15%">
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
-                <td style="width:70%">
+                <td style="width:60%">
                     @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td style="width:10%">
+                    @Html.DisplayFor(modelItem => item.Created)
                 </td>
                 <td style="width:15%">
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
@@ -42,7 +48,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="3" style="text-align:center" align="center">
+            <td colspan="4" style="text-align:center" align="center">
                 @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
             </td>
         </tr>

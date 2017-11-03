@@ -22,11 +22,11 @@ namespace MySqlWeb.Models
 
         public int Id { get; set; }
 
-        [Required()]
+        [Required(ErrorMessage = "Digite a descrição")]
         [MinLength(3, ErrorMessage = "Digite com no minimo 3 letras")]
         public string Description { get; set; }
 
-        [DataType(DataType.Date)]
+        [DataType(DataType.Date, ErrorMessage = "Data inválida")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? Created { get; set; }
     }
