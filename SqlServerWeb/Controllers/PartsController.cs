@@ -7,6 +7,7 @@ using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using System;
 using System.Collections.Generic;
 using X.PagedList;
+using X.PagedList.Mvc.Core.Fake;
 
 namespace SqlServerWeb.Controllers
 {
@@ -69,7 +70,7 @@ namespace SqlServerWeb.Controllers
                     {
                         ["description"] = part.Description
                     })
-                    .SaveInsertGetByIdInserted<Guid>();
+                    .SaveInsert<Guid>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }

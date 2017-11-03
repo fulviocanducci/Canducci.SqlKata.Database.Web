@@ -27,7 +27,7 @@ namespace PostgresWeb.Controllers
                 .SoftBuild()
                 .From("credit")
                 .Count()
-                .FindOne<int>();
+                .UniqueResultToInt();
 
             IEnumerable<Credit> model = connection
                 .SoftBuild()
@@ -65,8 +65,8 @@ namespace PostgresWeb.Controllers
                     .Insert(new Dictionary<string, object>
                     {
                         ["description"] = credit.Description
-                    })
-                    .SaveInsertGetByIdInserted<int>();
+                    })                    
+                    .SaveInsert<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }

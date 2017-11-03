@@ -62,15 +62,16 @@ namespace SqlServerWeb.Controllers
         {
             try
             {
-                var id = connection.SoftBuild()
+                var data = new Dictionary<string, object>
+                {
+                    ["Name"] = people.Name,
+                    ["Created"] = people.Created,
+                    ["Active"] = people.Active
+                };
+                var ins = connection.SoftBuild()
                     .From("People")
-                    .Insert(new Dictionary<string, object>
-                    {
-                        ["Name"] = people.Name, 
-                        ["Created"] = people.Created ?? default(DateTime?),
-                        ["Active"] = people.Active
-                    })
-                    .SaveInsertGetByIdInserted<int>();
+                    .Insert(data);
+               var id = ins.SaveInsert<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }
@@ -104,7 +105,7 @@ namespace SqlServerWeb.Controllers
                     })
                     .SaveUpdate();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Edit), new { Id = people.Id });
             }
             catch
             {

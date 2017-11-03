@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Canducci.SqlKata.Dapper.MySql;
-using MySqlWeb.Models;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using X.PagedList;
+using MySqlWeb.Models;
+using System.Threading.Tasks;
 
 namespace MySqlWeb.Controllers
 {
@@ -17,56 +17,62 @@ namespace MySqlWeb.Controllers
             this.connection = connection;
         }
         // GET: Credits
-        public ActionResult Index(int? page)
+        public async Task<ActionResult> Index(int? page)
         {
             page = page ?? 1;
 
             int items = 5;
 
-            int count = connection
+            int count = await connection
                 .SoftBuild()
                 .From("credit")
                 .Count()
-                .FindOne<int>();
+                .UniqueResultToIntAsync();
 
-            IEnumerable<Credit> model = connection
+            IEnumerable<Credit> result = await connection
                 .SoftBuild()
                 .From("credit")
                 .OrderBy("description")
                 .ForPage(page.Value, items)
-                .List<Credit>();
+                .ListAsync<Credit>();
 
-            StaticPagedList<Credit> result = new StaticPagedList<Credit>(model, page.Value, items, count);
+            StaticPagedList<Credit> model = 
+                new StaticPagedList<Credit>(result, page.Value, items, count);
 
-            return View(result);
+            return View(model);
         }
-
-        // GET: Credits/Details/5
-        public ActionResult Details(int id)
+                
+        public async Task<ActionResult> Details(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
-        }
+            var model = await connection
+                .SoftBuild()
+                .From("credit")
+                .Where("id", id)
+                .FindOneAsync<Credit>();
 
-        // GET: Credits/Create
+            return View(model);
+        }
+                
         public ActionResult Create()
         {
             return View();
         }
-
-        // POST: Credits/Create
+                
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Credit credit)
+        public async Task<ActionResult> Create(Credit credit)
         {
             try
             {
-                var id = connection.SoftBuild()
+                var id = await connection
+                    .SoftBuild()
                     .From("credit")
                     .Insert(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["description"] = credit.Description,
+                        ["created"] = credit.Created
                     })
-                    .SaveInsertGetByIdInserted<int>();
+                    .SaveInsertAsync<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }
@@ -75,28 +81,35 @@ namespace MySqlWeb.Controllers
                 return View();
             }
         }
-
-        // GET: Credits/Edit/5
-        public ActionResult Edit(int id)
+                
+        public async Task<ActionResult> Edit(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
-        }
+            var model = await connection
+                .SoftBuild()
+                .From("credit")
+                .Where("id", id)
+                .FindOneAsync<Credit>();
 
-        // POST: Credits/Edit/5
+            return View(model);
+        }
+                
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Credit credit)
+        public async Task<ActionResult> Edit(Credit credit)
         {
             try
             {
-                connection.SoftBuild()
+                await connection
+                    .SoftBuild()
                     .From("credit")
                     .Where("id", credit.Id)
                     .Update(new Dictionary<string, object>
                     {
-                        ["description"] = credit.Description
+                        ["description"] = credit.Description,
+                        ["created"] = credit.Created
+
                     })
-                    .SaveUpdate();
+                    .SaveUpdateAsync();
 
                 return RedirectToAction(nameof(Edit), new { id = credit.Id });
             }
@@ -105,25 +118,30 @@ namespace MySqlWeb.Controllers
                 return View();
             }
         }
-
-        // GET: Credits/Delete/5
-        public ActionResult Delete(int id)
+                
+        public async Task<ActionResult> Delete(int id)
         {
-            return View(connection.SoftBuild().From("credit").Where("id", id).FindOne<Credit>());
+            var model = await connection
+                .SoftBuild()
+                .From("credit")
+                .Where("id", id)
+                .FindOneAsync<Credit>();
+
+            return View(model);
         }
 
-        // POST: Credits/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, Credit credit)
         {
             try
             {                
-                connection.SoftBuild()
+               await connection
+                    .SoftBuild()
                     .From("credit")
                     .Where("id", id)
                     .Delete()
-                    .SaveUpdate();
+                    .SaveUpdateAsync();
 
                 return RedirectToAction(nameof(Index));
             }

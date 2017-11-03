@@ -6,6 +6,7 @@ using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using Microsoft.AspNetCore.Http;
 using X.PagedList;
+
 namespace SqlServerWeb.Controllers
 {
     public class CreditsController : Controller
@@ -34,7 +35,7 @@ namespace SqlServerWeb.Controllers
                 .OrderBy("Description")
                 .ForPage(page.Value, total)
                 .List<Credit>();
-
+            
             StaticPagedList<Credit> result =
                 new StaticPagedList<Credit>(model, page.Value, total, count);
 
@@ -66,7 +67,7 @@ namespace SqlServerWeb.Controllers
                     {
                         ["description"] = credit.Description
                     })
-                    .SaveInsertGetByIdInserted<int>();
+                    .SaveInsert<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
             }
