@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace PostgresWeb.Models
 {
@@ -29,6 +31,17 @@ namespace PostgresWeb.Models
         [DataType(DataType.Date, ErrorMessage = "Data inválida")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? Created { get; set; }
+
+        
+        public static implicit operator Dictionary<string, object>(Credit cr)
+        {
+            Dictionary<string, object> values = new Dictionary<string, object>();
+            foreach (PropertyInfo info in cr.GetType().GetProperties())
+            {
+                values.Add(info.Name.ToLower(), info.GetValue(cr, null));
+            }
+            return values;
+        }
 
     }
 }

@@ -66,6 +66,8 @@ namespace PostgresWeb.Controllers
         {
             try
             {
+                //Dictionary<string, object> values = credit;
+
                 var id = await connection.SoftBuild()
                     .From("credit")
                     .Insert(new Dictionary<string, object>
