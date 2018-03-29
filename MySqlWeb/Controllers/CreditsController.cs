@@ -26,7 +26,7 @@ namespace MySqlWeb.Controllers
             int count = await connection
                 .SoftBuild()
                 .From("credit")
-                .Count()
+                .AsCount()
                 .UniqueResultToIntAsync();
 
             IEnumerable<Credit> result = await connection
@@ -67,7 +67,7 @@ namespace MySqlWeb.Controllers
                 var id = await connection
                     .SoftBuild()
                     .From("credit")
-                    .Insert(new Dictionary<string, object>
+                    .AsInsert(new Dictionary<string, object>
                     {
                         ["description"] = credit.Description,
                         ["created"] = credit.Created
@@ -103,7 +103,7 @@ namespace MySqlWeb.Controllers
                     .SoftBuild()
                     .From("credit")
                     .Where("id", credit.Id)
-                    .Update(new Dictionary<string, object>
+                    .AsUpdate(new Dictionary<string, object>
                     {
                         ["description"] = credit.Description,
                         ["created"] = credit.Created
@@ -140,7 +140,7 @@ namespace MySqlWeb.Controllers
                     .SoftBuild()
                     .From("credit")
                     .Where("id", id)
-                    .Delete()
+                    .AsDelete()
                     .SaveUpdateAsync();
 
                 return RedirectToAction(nameof(Index));

@@ -27,7 +27,7 @@ namespace SqlServerWeb.Controllers
             int count = connection
                 .SoftBuild()
                 .From("Credit")
-                .Count()
+                .AsCount()
                 .FindOne<int>();
 
             IEnumerable<Credit> model = connection
@@ -64,7 +64,7 @@ namespace SqlServerWeb.Controllers
             {
                 var id = connection.SoftBuild()
                     .From("Credit")
-                    .Insert(new Dictionary<string, object>
+                    .AsInsert(new Dictionary<string, object>
                     {
                         ["Description"] = credit.Description,
                         ["Created"] = credit.Created
@@ -95,7 +95,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("Credit")
                     .Where("Id", credit.Id)
-                    .Update(new Dictionary<string, object>
+                    .AsUpdate(new Dictionary<string, object>
                     {
                         ["Description"] = credit.Description,
                         ["Created"] = credit.Created
@@ -126,7 +126,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("Credit")
                     .Where("id", id)
-                    .Delete()
+                    .AsDelete()
                     .SaveUpdate();
 
                 return RedirectToAction(nameof(Index));

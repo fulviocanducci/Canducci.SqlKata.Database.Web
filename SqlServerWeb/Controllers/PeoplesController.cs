@@ -27,7 +27,7 @@ namespace SqlServerWeb.Controllers
             int count = connection
                 .SoftBuild()
                 .From("People")
-                .Count()
+                .AsCount()
                 .FindOne<int>();
 
             IEnumerable<People> model = connection
@@ -70,7 +70,7 @@ namespace SqlServerWeb.Controllers
                 };
                 var ins = connection.SoftBuild()
                     .From("People")
-                    .Insert(data);
+                    .AsInsert(data);
                var id = ins.SaveInsert<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
@@ -97,7 +97,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("People")
                     .Where("Id", people.Id)
-                    .Update(new Dictionary<string, object>
+                    .AsUpdate(new Dictionary<string, object>
                     {
                         ["Name"] = people.Name,
                         ["Created"] = people.Created,
@@ -129,7 +129,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("People")
                     .Where("Id", id)
-                    .Delete()
+                    .AsDelete()
                     .SaveUpdate();
 
                 return RedirectToAction(nameof(Index));

@@ -7,7 +7,6 @@ using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using System;
 using System.Collections.Generic;
 using X.PagedList;
-using X.PagedList.Mvc.Core.Fake;
 
 namespace SqlServerWeb.Controllers
 {
@@ -29,7 +28,7 @@ namespace SqlServerWeb.Controllers
             int count = connection
                 .SoftBuild()
                 .From("Part")
-                .Count()
+                .AsCount()
                 .FindOne<int>();
 
             IEnumerable<Part> model = connection
@@ -66,7 +65,7 @@ namespace SqlServerWeb.Controllers
             {
                 var id = connection.SoftBuild()
                     .From("part")
-                    .Insert(new Dictionary<string, object>
+                    .AsInsert(new Dictionary<string, object>
                     {
                         ["description"] = part.Description
                     })
@@ -96,7 +95,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("part")
                     .Where("id", part.Id)
-                    .Update(new Dictionary<string, object>
+                    .AsUpdate(new Dictionary<string, object>
                     {
                         ["description"] = part.Description
                     })
@@ -126,7 +125,7 @@ namespace SqlServerWeb.Controllers
                 connection.SoftBuild()
                     .From("part")
                     .Where("id", Guid.Parse(id))
-                    .Delete()
+                    .AsDelete()
                     .SaveUpdate();
 
                 return RedirectToAction(nameof(Index));
