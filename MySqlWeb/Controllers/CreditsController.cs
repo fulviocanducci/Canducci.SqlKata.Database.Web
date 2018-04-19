@@ -18,21 +18,21 @@ namespace MySqlWeb.Controllers
             this.connection = connection;
         }
         // GET: Credits
-        public async Task<ActionResult> Index(int? page)
+        public async Task<ActionResult> Index(int? current)
         {
-            page = page ?? 1;
+            current = current ?? 1;
             int items = 5;
 
             QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
             var results = queries
                 .AddQuery(x => x.From("credit").AsCount())
-                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(page.Value, items))
+                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(current.Value, items))
                 .Results();
 
             int count = results.ReadFirst<int>();
             IEnumerable<Credit> result = await results.ReadAsync<Credit>();
-            StaticPaginated<Credit> model = new StaticPaginated<Credit>(result, page.Value, items, count);
+            StaticPaginated<Credit> model = new StaticPaginated<Credit>(result, current.Value, items, count);
             return View(model);
         }
                 

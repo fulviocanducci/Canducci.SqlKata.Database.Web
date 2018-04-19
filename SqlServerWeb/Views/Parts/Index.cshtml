@@ -1,8 +1,7 @@
 ﻿@model Canducci.Pagination.StaticPaginated<SqlServerWeb.Models.Part>
-
-
 @{
     ViewData["Title"] = "Index";
+    var options = new PaginatedOptions { NextLabel = "Próximo", PreviousLabel = "Anterior", FirstLabel = "Primeiro", LastLabel = "Último" };
 }
 
 <h2>Part - Lista - SQLServer</h2>
@@ -43,7 +42,7 @@
     <tfoot>
         <tr>
             <td colspan="3" style="text-align:center" align="center">
-                @Html.Pagination(Model, page => Url.Action("Index", new { page = page }))
+                @Html.Pagination(Model, current => Url.Action("Index", new { current = current }), PaginatedStyle.NumbersWithFirstPreviousNextLast, options)
             </td>
         </tr>
     </tfoot>

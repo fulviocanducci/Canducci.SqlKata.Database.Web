@@ -18,21 +18,21 @@ namespace PostgresWeb.Controllers
             this.connection = connection;
         }
         
-        public async Task<ActionResult> Index(int? page)
+        public async Task<ActionResult> Index(int? current)
         {
-            page = page ?? 1;
+            current = current ?? 1;
             int items = 5;
 
             QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
             var results = queries
                 .AddQuery(x => x.From("credit").AsCount())
-                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(page.Value, items))
+                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(current.Value, items))
                 .Results();
 
             int count = results.ReadFirst<int>();
             IEnumerable<Credit> model = await results.ReadAsync<Credit>();
-            StaticPaginated<Credit> result = new StaticPaginated<Credit>(model, page.Value, items, count);
+            StaticPaginated<Credit> result = new StaticPaginated<Credit>(model, current.Value, items, count);
 
             return View(result);
         }

@@ -20,21 +20,21 @@ namespace SqlServerWeb.Controllers
         }
 
         // GET: Parts
-        public async Task<ActionResult> Index(int? page)
+        public async Task<ActionResult> Index(int? current)
         {
-            page = page ?? 1;
+            current = current ?? 1;
             int items = 5;
 
             QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
             var results = queries
                 .AddQuery(x => x.From("Part").AsCount())
-                .AddQuery(x => x.From("Part").OrderBy("Description").ForPage(page.Value, items))
+                .AddQuery(x => x.From("Part").OrderBy("Description").ForPage(current.Value, items))
                 .Results();
 
             int count = results.ReadFirst<int>();
             IEnumerable<Part> model = await results.ReadAsync<Part>();
-            StaticPaginated<Part> result = new StaticPaginated<Part>(model, page.Value, items, count);
+            StaticPaginated<Part> result = new StaticPaginated<Part>(model, current.Value, items, count);
 
             return View(result);
         }
