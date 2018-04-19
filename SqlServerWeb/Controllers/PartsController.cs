@@ -6,8 +6,9 @@ using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using System;
 using System.Collections.Generic;
-using X.PagedList;
-
+using Canducci.SqlKata.Dapper;
+using System.Threading.Tasks;
+using Canducci.Pagination;
 namespace SqlServerWeb.Controllers
 {
     public class PartsController : Controller
@@ -19,27 +20,21 @@ namespace SqlServerWeb.Controllers
         }
 
         // GET: Parts
-        public ActionResult Index(int? page)
+        public async Task<ActionResult> Index(int? page)
         {
             page = page ?? 1;
+            int items = 5;
 
-            int total = 5;
+            QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
-            int count = connection
-                .SoftBuild()
-                .From("Part")
-                .AsCount()
-                .FindOne<int>();
+            var results = queries
+                .AddQuery(x => x.From("Part").AsCount())
+                .AddQuery(x => x.From("Part").OrderBy("Description").ForPage(page.Value, items))
+                .Results();
 
-            IEnumerable<Part> model = connection
-                .SoftBuild()
-                .From("Part")
-                .OrderBy("Description")
-                .ForPage(page.Value, total)
-                .List<Part>();
-
-            StaticPagedList<Part> result =
-                new StaticPagedList<Part>(model, page.Value, total, count);
+            int count = results.ReadFirst<int>();
+            IEnumerable<Part> model = await results.ReadAsync<Part>();
+            StaticPaginated<Part> result = new StaticPaginated<Part>(model, page.Value, items, count);
 
             return View(result);
         }
@@ -47,7 +42,7 @@ namespace SqlServerWeb.Controllers
         // GET: Parts/Details/5
         public ActionResult Details(string id)
         {
-            return View(connection.SoftBuild().From("part").Where("id", Guid.Parse(id)).FindOne<Part>());
+            return View(connection.SoftBuild().From("Part").Where("Id", Guid.Parse(id)).FindOne<Part>());
         }
 
         // GET: Parts/Create
@@ -64,14 +59,14 @@ namespace SqlServerWeb.Controllers
             try
             {
                 var id = connection.SoftBuild()
-                    .From("part")
+                    .From("Part")
                     .AsInsert(new Dictionary<string, object>
                     {
-                        ["description"] = part.Description
+                        ["Description"] = part.Description
                     })
                     .SaveInsert<Guid>();
 
-                return RedirectToAction(nameof(Edit), new { id = id });
+                return RedirectToAction(nameof(Edit), new { id });
             }
             catch
             {
@@ -82,7 +77,7 @@ namespace SqlServerWeb.Controllers
         // GET: Parts/Edit/5
         public ActionResult Edit(string id)
         {
-            return View(connection.SoftBuild().From("part").Where("id", Guid.Parse(id)).FindOne<Part>());
+            return View(connection.SoftBuild().From("Part").Where("Id", Guid.Parse(id)).FindOne<Part>());
         }
 
         // POST: Parts/Edit/5
@@ -93,11 +88,11 @@ namespace SqlServerWeb.Controllers
             try
             {
                 connection.SoftBuild()
-                    .From("part")
-                    .Where("id", part.Id)
+                    .From("Part")
+                    .Where("Id", part.Id)
                     .AsUpdate(new Dictionary<string, object>
                     {
-                        ["description"] = part.Description
+                        ["Description"] = part.Description
                     })
                     .SaveUpdate();
 
@@ -112,7 +107,7 @@ namespace SqlServerWeb.Controllers
         // GET: Parts/Delete/5
         public ActionResult Delete(string id)
         {
-            return View(connection.SoftBuild().From("part").Where("id", Guid.Parse(id)).FindOne<Part>()); 
+            return View(connection.SoftBuild().From("Part").Where("Id", Guid.Parse(id)).FindOne<Part>()); 
         }
 
         // POST: Parts/Delete/5
@@ -123,8 +118,8 @@ namespace SqlServerWeb.Controllers
             try
             {
                 connection.SoftBuild()
-                    .From("part")
-                    .Where("id", Guid.Parse(id))
+                    .From("Part")
+                    .Where("Id", Guid.Parse(id))
                     .AsDelete()
                     .SaveUpdate();
 

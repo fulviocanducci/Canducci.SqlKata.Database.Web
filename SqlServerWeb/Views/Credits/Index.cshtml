@@ -1,6 +1,4 @@
-﻿@model X.PagedList.StaticPagedList<SqlServerWeb.Models.Credit>
-@using X.PagedList.Mvc.Core
-
+﻿@model Canducci.Pagination.StaticPaginated<SqlServerWeb.Models.Credit>
 @{
     ViewData["Title"] = "Index";
 }
@@ -47,7 +45,7 @@
     <tfoot>
         <tr>
             <td colspan="4" style="text-align:center" align="center">
-                @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }))
+                @Html.Pagination(Model, page => Url.Action("Index", new { page = page }))
             </td>
         </tr>
     </tfoot>

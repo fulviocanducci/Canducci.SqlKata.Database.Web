@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using Canducci.SqlKata.Dapper.Postgres;
 using PostgresWeb.Models;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
-using X.PagedList;
 using System.Threading.Tasks;
 using System;
-
+using Canducci.SqlKata.Dapper;
+using Canducci.Pagination;
 namespace PostgresWeb.Controllers
 {
     public class CreditsController : Controller
@@ -22,24 +21,18 @@ namespace PostgresWeb.Controllers
         public async Task<ActionResult> Index(int? page)
         {
             page = page ?? 1;
-
             int items = 5;
 
-            int count = await connection
-                .SoftBuild()
-                .From("credit")
-                .AsCount()
-                .UniqueResultToIntAsync();
+            QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
-            IEnumerable<Credit> model = await connection
-                .SoftBuild()
-                .From("credit")
-                .OrderBy("description")
-                .ForPage(page.Value, items)
-                .ListAsync<Credit>();
+            var results = queries
+                .AddQuery(x => x.From("credit").AsCount())
+                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(page.Value, items))
+                .Results();
 
-            StaticPagedList<Credit> result = 
-                new StaticPagedList<Credit>(model, page.Value, items, count);
+            int count = results.ReadFirst<int>();
+            IEnumerable<Credit> model = await results.ReadAsync<Credit>();
+            StaticPaginated<Credit> result = new StaticPaginated<Credit>(model, page.Value, items, count);
 
             return View(result);
         }

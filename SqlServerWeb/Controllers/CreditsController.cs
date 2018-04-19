@@ -5,8 +5,10 @@ using SqlServerWeb.Models;
 using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
 using Microsoft.AspNetCore.Http;
-using X.PagedList;
+using Canducci.Pagination;
 using System;
+using Canducci.SqlKata.Dapper;
+using System.Threading.Tasks;
 
 namespace SqlServerWeb.Controllers
 {
@@ -18,27 +20,21 @@ namespace SqlServerWeb.Controllers
             this.connection = connection;
         }
         // GET: Credits
-        public ActionResult Index(int? page)
+        public async Task<ActionResult> Index(int? page)
         {
             page = page ?? 1;
+            int items = 5;
 
-            int total = 5;
+            QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
-            int count = connection
-                .SoftBuild()
-                .From("Credit")
-                .AsCount()
-                .FindOne<int>();
+            var results = queries
+                .AddQuery(x => x.From("credit").AsCount())
+                .AddQuery(x => x.From("credit").OrderBy("description").ForPage(page.Value, items))
+                .Results();
 
-            IEnumerable<Credit> model = connection
-                .SoftBuild()
-                .From("Credit")
-                .OrderBy("Description")
-                .ForPage(page.Value, total)
-                .List<Credit>();
-            
-            StaticPagedList<Credit> result =
-                new StaticPagedList<Credit>(model, page.Value, total, count);
+            int count = results.ReadFirst<int>();
+            IEnumerable<Credit> model = await results.ReadAsync<Credit>();
+            StaticPaginated<Credit> result = new StaticPaginated<Credit>(model, page.Value, items, count);
 
             return View(result);
         }

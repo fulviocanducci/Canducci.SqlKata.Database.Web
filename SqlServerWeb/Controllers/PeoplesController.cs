@@ -6,7 +6,9 @@ using System.Data;
 using SqlServerWeb.Models;
 using Canducci.SqlKata.Dapper.SqlServer;
 using Canducci.SqlKata.Dapper.Extensions.SoftBuilder;
-using X.PagedList;
+using Canducci.Pagination;
+using Canducci.SqlKata.Dapper;
+using System.Threading.Tasks;
 
 namespace SqlServerWeb.Controllers
 {
@@ -18,27 +20,21 @@ namespace SqlServerWeb.Controllers
             this.connection = connection;
         }
         // GET: Peoples
-        public ActionResult Index(int? page)
+        public async Task<ActionResult> Index(int? page)
         {
             page = page ?? 1;
+            int items = 5;
 
-            int total = 5;
+            QueryBuilderMultiple queries = connection.SoftBuild().QueryBuilderMultipleCollection();
 
-            int count = connection
-                .SoftBuild()
-                .From("People")
-                .AsCount()
-                .FindOne<int>();
+            var results = queries
+                .AddQuery(x => x.From("People").AsCount())
+                .AddQuery(x => x.From("People").OrderBy("Name").ForPage(page.Value, items))
+                .Results();
 
-            IEnumerable<People> model = connection
-                .SoftBuild()
-                .From("People")
-                .OrderBy("Name")
-                .ForPage(page.Value, total)
-                .List<People>();
-
-            StaticPagedList<People> result =
-                new StaticPagedList<People>(model, page.Value, total, count);
+            int count = results.ReadFirst<int>();
+            IEnumerable<People> model = await results.ReadAsync<People>();
+            StaticPaginated<People> result = new StaticPaginated<People>(model, page.Value, items, count);
 
             return View(result);
         }

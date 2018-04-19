@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Canducci.SqlKata.Dapper.MySql" Version="1.0.3" />
+    <PackageReference Include="Canducci.Pagination.Mvc" Version="1.0.3.1" />
+    <PackageReference Include="Canducci.SqlKata.Dapper.MySql" Version="1.0.3.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" />
-    <PackageReference Include="MySql.Data" Version="8.0.9-dmr" />
-    <PackageReference Include="X.PagedList.Mvc.Core" Version="1.0.7-beta" />
+    <PackageReference Include="MySql.Data" Version="8.0.11" />
   </ItemGroup>
 
   <ItemGroup>
