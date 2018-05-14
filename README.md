@@ -1,5 +1,9 @@
 # Canducci.SqlKata.Database.Web
 
+[![Version](https://img.shields.io/nuget/v/Canducci.SqlKata.Dapper.svg?style=plastic&label=version)](https://www.nuget.org/packages/Canducci.SqlKata.Dapper/)
+[![NuGet](https://img.shields.io/nuget/dt/Canducci.SqlKata.Dapper.svg)](https://www.nuget.org/packages/Canducci.SqlKata.Dapper/)
+[![Build Status](https://travis-ci.org/fulviocanducci/Canducci.SqlKata.Dapper.svg?branch=master)](https://travis-ci.org/fulviocanducci/Canducci.SqlKata.Dapper)
+
 ## Example
 
 ### Packages:
@@ -47,7 +51,8 @@ public class Credit
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddScoped<IDbConnection>(_ => new NpgsqlConnection(Configuration.GetConnectionString("PostgresDatabaseConnectionString")));            
+    services.AddScoped<IDbConnection>(_ => 
+		new NpgsqlConnection(Configuration.GetConnectionString("PostgresDatabaseConnectionString")));            
     services.AddMvc();
 }
 ```
