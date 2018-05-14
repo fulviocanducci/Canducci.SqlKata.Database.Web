@@ -51,9 +51,9 @@ public class Credit
 ```csharp
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddScoped<IDbConnection>(_ => 
-		new NpgsqlConnection(Configuration.GetConnectionString("PostgresDatabaseConnectionString")));            
-    services.AddMvc();
+    services.AddScoped<IDbConnection>(_ =>
+		new NpgsqlConnection(Configuration.GetConnectionString("PostgresDatabaseConnectionString")));
+	services.AddMvc();
 }
 ```
 
@@ -122,9 +122,8 @@ namespace PostgresWeb.Controllers
         {
             try
             {
-                //Dictionary<string, object> values = credit;
-
-                var id = await connection.SoftBuild()
+                var id = await connection
+					.SoftBuild()
                     .From("credit")
                     .AsInsert(new Dictionary<string, object>
                     {
@@ -158,7 +157,8 @@ namespace PostgresWeb.Controllers
         {
             try
             {
-                await connection.SoftBuild()
+                await connection
+					.SoftBuild()
                     .From("credit")
                     .Where("id", credit.Id)
                     .AsUpdate(new Dictionary<string, object>
@@ -193,7 +193,8 @@ namespace PostgresWeb.Controllers
         {
             try
             {                
-                await connection.SoftBuild()
+                await connection
+					.SoftBuild()
                     .From("credit")
                     .Where("id", id)
                     .AsDelete()
@@ -209,3 +210,13 @@ namespace PostgresWeb.Controllers
     }
 }
 ```
+## Wiki Page
+
+[Canducci SqlKata Dapper Wiki Page](https://github.com/fulviocanducci/Canducci.SqlKata.Dapper/wiki)
+
+## Related links
+
+- [Canducci SqlKata Dapper Wiki Page](https://github.com/fulviocanducci/Canducci.SqlKata.Dapper/wiki)
+- [SqlKata](https://sqlkata.com/)
+- [Docs SqlKata](https://sqlkata.com/docs)
+- [github: sqlkata/querybuilder](https://github.com/sqlkata/querybuilder)
