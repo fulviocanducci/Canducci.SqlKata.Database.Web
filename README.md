@@ -4,14 +4,14 @@
 [![NuGet](https://img.shields.io/nuget/dt/Canducci.SqlKata.Dapper.svg)](https://www.nuget.org/packages/Canducci.SqlKata.Dapper/)
 [![Build Status](https://travis-ci.org/fulviocanducci/Canducci.SqlKata.Dapper.svg?branch=master)](https://travis-ci.org/fulviocanducci/Canducci.SqlKata.Dapper)
 
-## Example
+## Example With Postgres
 
-### Packages:
+### Packages
 
 ```
-- Canducci.Pagination.Mvc
-- Canducci.SqlKata.Dapper.Postgres
-- Npgsql
+- [Canducci.Pagination.Mvc](https://www.nuget.org/packages/Canducci.Pagination.Mvc/)
+- [Canducci.SqlKata.Dapper.Postgres](https://www.nuget.org/packages/Canducci.SqlKata.Dapper.Postgres/)
+- [Npgsql](https://www.nuget.org/packages/Npgsql/)
 ```
 
 ### Model
