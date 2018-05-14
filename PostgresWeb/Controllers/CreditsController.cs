@@ -13,6 +13,7 @@ namespace PostgresWeb.Controllers
     public class CreditsController : Controller
     {
         private IDbConnection connection;
+
         public CreditsController(IDbConnection connection)
         {
             this.connection = connection;

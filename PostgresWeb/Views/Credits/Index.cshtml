@@ -45,6 +45,8 @@
             </tr>
         }
     </tbody>
+    @if (Model.HasNextPage || Model.HasPreviousPage)
+    {
     <tfoot>
         <tr>
             <td colspan="4" style="text-align:center" align="center">
@@ -52,4 +54,5 @@
             </td>
         </tr>
     </tfoot>
+    }
 </table>
