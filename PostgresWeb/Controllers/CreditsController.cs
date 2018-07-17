@@ -71,11 +71,11 @@ namespace PostgresWeb.Controllers
                     })                    
                     .SaveInsertAsync<int>();
 
-                return RedirectToAction(nameof(Edit), new { id = id });
+                return RedirectToAction(nameof(Edit), new { id });
             }
             catch (Exception ex)
             {
-                return View();
+                throw ex;
             }
         }
                 
