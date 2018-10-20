@@ -6,9 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="Canducci.Pagination.Mvc" Version="1.0.3.2" />
-    <PackageReference Include="Canducci.SqlKata.Dapper.Postgres" Version="1.0.7" />
+    <PackageReference Include="Canducci.SqlKata.Dapper.Postgres" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
-    <PackageReference Include="Npgsql" Version="4.0.2" />
+    <PackageReference Include="Npgsql" Version="4.0.3" />
   </ItemGroup>
 
   <ItemGroup>

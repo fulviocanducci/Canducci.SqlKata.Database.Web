@@ -15,7 +15,7 @@ namespace MySqlWeb.Controllers
         private IDbConnection connection;
         public CreditsController(IDbConnection connection)
         {
-            this.connection = connection;
+            this.connection = connection;            
         }
         // GET: Credits
         public async Task<ActionResult> Index(int? current)
@@ -65,7 +65,7 @@ namespace MySqlWeb.Controllers
                     {
                         ["description"] = credit.Description,
                         ["created"] = credit.Created
-                    })
+                    })                    
                     .SaveInsertAsync<int>();
 
                 return RedirectToAction(nameof(Edit), new { id = id });
