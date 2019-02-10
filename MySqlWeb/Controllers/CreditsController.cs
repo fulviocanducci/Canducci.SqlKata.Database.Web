@@ -7,6 +7,7 @@ using Canducci.Pagination;
 using MySqlWeb.Models;
 using System.Threading.Tasks;
 using Canducci.SqlKata.Dapper;
+using System;
 
 namespace MySqlWeb.Controllers
 {
@@ -65,12 +66,12 @@ namespace MySqlWeb.Controllers
                     {
                         ["description"] = credit.Description,
                         ["created"] = credit.Created
-                    })                    
+                    }, true)                    
                     .SaveInsertAsync<int>();
 
-                return RedirectToAction(nameof(Edit), new { id = id });
+                return RedirectToAction(nameof(Edit), new { id });
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
